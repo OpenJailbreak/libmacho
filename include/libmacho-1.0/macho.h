@@ -26,6 +26,10 @@
 #include <libmacho-1.0/command.h>
 #include <libcrippy-1.0/libcrippy.h>
 
+#define MACHO_MAGIC_32  0xFEEDFACE
+#define MACHO_MAGIC_64  0xFEEDFACF
+#define MACHO_MAGIC_FAT 0xCAFEBABE
+
 typedef struct macho_header_t {
 	uint32_t magic;
 	uint32_t cputype;
@@ -44,9 +48,9 @@ typedef struct macho_t {
 	uint32_t segment_count;
 	uint32_t symtab_count;
 	macho_header_t* header;
+	macho_symtab_t** symtabs;
 	macho_command_t** commands;
 	macho_segment_t** segments;
-	macho_symtab_t** symtabs;
 } macho_t;
 
 /*

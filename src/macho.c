@@ -258,6 +258,7 @@ macho_header_t* macho_header_load(macho_t* macho) {
 		header = macho_header_create();
 		if (header) {
 			memcpy(header, &data[offset], sizeof(macho_header_t));
+			if(header->magic != MACHO_MAGIC_32)
 			macho->offset += sizeof(macho_header_t);
 			macho_header_debug(header);
 		}
