@@ -29,13 +29,15 @@ int main(int argc, char* argv[]) {
 	}
 	char* exec = argv[1];
 	macho_t* macho = macho_open(exec);
-	//macho_debug(macho);
 	if(macho) {
+		macho_debug(macho);
+		/*
 		macho_section_t* dwarf_abbrev = macho_get_section(macho, "__DWARF", "__abbrev");
 		if(dwarf_abbrev) {
 			printf("Found DWARF abbrev section at 0x%08x and is 0x%08x bytes long\n", dwarf_abbrev->info->offset, dwarf_abbrev->info->size);
 			macho_section_free(dwarf_abbrev);
 		}
+		*/
 		macho_free(macho);
 	}
 	return 0;

@@ -65,12 +65,20 @@ macho_command_t* macho_command_create() {
 macho_command_t* macho_command_load(unsigned char* data, uint32_t offset) {
 	uint32_t size = 0;
 	macho_command_t* command = macho_command_create();
+	if(command == NULL) {
+		error("Unable to create command\n");
+		return NULL;
+	}
+
 	macho_command_info_t* info = macho_command_info_load(data, offset); //(macho_command_info_t*) &data[offset];
 	if (info) {
 		command->info = info;
-		command->size = command->info->cmdsize;
+		command->cmd = info->cmd;
+		command->size = info->cmdsize;
+		command->data = data;
 		command->offset = offset;
 	}
+
 	return command;
 }
 

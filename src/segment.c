@@ -50,9 +50,8 @@ macho_segment_t* macho_segment_load(unsigned char* data, uint32_t offset) {
 		segment->size = segment->command->filesize;
 		segment->offset = segment->command->fileoff;
 		segment->address = segment->command->vmaddr;
-		segment->data = NULL; // ????
+		segment->data = &data[offset];
 		segment->section_count = segment->command->nsects;
-		//macho_section_load();
 		segment->sections = malloc(segment->command->nsects * sizeof(macho_section_t*));
 	}
 	return segment;

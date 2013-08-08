@@ -20,11 +20,13 @@
 #ifndef MACHO_H_
 #define MACHO_H_
 
-#include <libmacho-1.0/symtab.h>
-#include <libmacho-1.0/segment.h>
-#include <libmacho-1.0/section.h>
-#include <libmacho-1.0/command.h>
+#include <libcrippy-1.0/debug.h>
 #include <libcrippy-1.0/libcrippy.h>
+
+#include "libmacho-1.0/symtab.h"
+#include "libmacho-1.0/segment.h"
+#include "libmacho-1.0/section.h"
+#include "libmacho-1.0/command.h"
 
 #define MACHO_MAGIC_32  0xFEEDFACE
 #define MACHO_MAGIC_64  0xFEEDFACF
@@ -59,12 +61,14 @@ typedef struct macho_t {
 macho_t* macho_create();
 macho_t* macho_open(const char* path);
 macho_t* macho_load(unsigned char* data, uint32_t size);
+void macho_debug(macho_t* macho);
+void macho_free(macho_t* macho);
+
 uint32_t macho_lookup(macho_t* macho, const char* sym);
 macho_segment_t* macho_get_segment(macho_t* macho, const char* segment);
 macho_section_t* macho_get_section(macho_t* macho, const char* segment, const char* section);
 void macho_list_symbols(macho_t* macho, void (*print_func)(const char*, uint32_t, void*), void* userdata);
-void macho_debug(macho_t* macho);
-void macho_free(macho_t* macho);
+
 
 int macho_handle_command(macho_t* macho, macho_command_t* command);
 
@@ -96,8 +100,9 @@ void macho_segments_free(macho_segment_t** segments);
  * Mach-O Symtab Functions
  */
 macho_symtab_t** macho_symtabs_create(uint32_t count);
-void macho_symtabs_debug(macho_symtab_t** segments);
-void macho_symtabs_free(macho_symtab_t** segments);
+macho_symtab_t** macho_symtabs_load(macho_t* macho);
+void macho_symtabs_debug(macho_symtab_t** symtabs);
+void macho_symtabs_free(macho_symtab_t** symtabs);
 
 /*
  * Mach-O Sections Functions
