@@ -408,7 +408,7 @@ macho_segment_t** macho_segments_load(macho_t* macho) {
 			return NULL;
 		}
 
-		debug("Loading Mach-O segments\n")
+		debug("Loading Mach-O segments\n");
 		for (i = 0; i < macho->command_count; i++) {
 			if (macho->commands[i]->cmd == MACHO_CMD_SEGMENT) {
 				segment = macho_segment_load(macho->data, macho->offset);
@@ -421,7 +421,7 @@ macho_segment_t** macho_segments_load(macho_t* macho) {
 			}
 		}
 		macho_segment_t* segment = macho_segment_create(count);
-		if (commands == NULL) {
+		if (macho->commands == NULL) {
 			error("Unable to create Mach-O commands array\n");
 			return NULL;
 		}
@@ -429,16 +429,16 @@ macho_segment_t** macho_segments_load(macho_t* macho) {
 		debug("Loading Mach-O commands array\n");
 		for (i = 0; i < count; i++) {
 			debug("Loading Mach-O command %d from offset 0x%x\n", i, macho->offset);
-			commands[i] = macho_command_load(macho->data, macho->offset);
-			if (commands[i] == NULL) {
+			macho->commands[i] = macho_command_load(macho->data, macho->offset);
+			if (macho->commands[i] == NULL) {
 				error("Unable to parse Mach-O load command\n");
-				macho_commands_free(commands);
+				macho_commands_free(macho->commands);
 				return NULL;
 			}
-			macho->offset += commands[i]->size;
+			macho->offset += macho->commands[i]->size;
 		}
 	}
-	return commands;
+	return macho->commands;
 }
 
 void macho_segments_debug(macho_segment_t** segments) {
@@ -525,7 +525,7 @@ macho_section_t** macho_sections_load(macho_t* macho, macho_segment_t* segment) 
 
 		int i = 0;
 		for (i = 0; i < segment->section_count; i++) {
-			segment->sections[i] = macho_section_load(segment->data, seg)
+			segment->sections[i] = macho_section_load(segment->data, seg);
 		}
 	}
 	return sections;
