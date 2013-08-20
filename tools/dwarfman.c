@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 	char* exec = argv[1];
 	macho_t* macho = macho_open(exec);
 	if(macho) {
-		macho_debug(macho);
+		//macho_debug(macho);
 		/*
 		macho_section_t* dwarf_abbrev = macho_get_section(macho, "__DWARF", "__abbrev");
 		if(dwarf_abbrev) {

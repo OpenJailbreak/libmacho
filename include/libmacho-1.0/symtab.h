@@ -52,7 +52,7 @@ typedef struct macho_symtab_t {
  * Mach-O Symtab Functions
  */
 macho_symtab_t* macho_symtab_create();
-macho_symtab_t* macho_symtab_load(unsigned char* cmd, unsigned char* data);
+macho_symtab_t* macho_symtab_load(unsigned char* data, unsigned int offset);
 void macho_symtab_debug(macho_symtab_t* symtab);
 void macho_symtab_free(macho_symtab_t* symtab);
 

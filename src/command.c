@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+#define _DEBUG
 #include <libmacho-1.0/command.h>
 
 #include <libcrippy-1.0/debug.h>

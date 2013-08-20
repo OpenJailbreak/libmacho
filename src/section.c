@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define _DEBUG
 #include <libcrippy-1.0/debug.h>
 #include <libcrippy-1.0/libcrippy.h>
 
@@ -30,16 +31,33 @@
  * Mach-O Segment Functions
  */
 macho_section_t* macho_section_create() {
-	macho_section_t* section = NULL;
+	macho_section_t* section = (macho_section_t*) malloc(sizeof(macho_section_t));
+	if(section) {
+		memset(section, '\0', sizeof(macho_section_t));
+	}
 	return section;
 }
 
 macho_section_t* macho_section_load(unsigned char* data, uint32_t offset) {
-	macho_section_t* section = macho_section_create();
+	macho_section_t* section = NULL;
+	if(data) {
+		debug("Creating Mach-O Section\n");
+		section = macho_section_create();
+		if(section) {
+			debug("Loading Mach-O Section\n");
+			section->info = macho_section_info_load(data, offset);
+			if(section->info) {
+				debug("Section Loaded\n");
+			}
+		}
+	}
 	return section;
 }
 
 void macho_section_debug(macho_section_t* section) {
+	if(section && section->info) {
+		macho_section_info_debug(section->info);
+	}
 
 }
 
@@ -68,23 +86,24 @@ macho_section_info_t* macho_section_info_load(unsigned char* data, uint32_t offs
 }
 
 void macho_section_info_debug(macho_section_info_t* info) {
-	debug("SectName: %s\n", info->sectname);
+	debug("\t\tSection:\n");
+	debug("\t\t\tSectName: %s\n", info->sectname);
   	//char		sectname[16];	/* name of this section */
-	debug("SegName: %s\n", info->segname);
+	debug("\t\t\tSegName: %s\n", info->segname);
 	//char		segname[16];	/* segment this section goes in */
-	debug("Address: 0x%x\n", info->?addr);
+	debug("\t\t\tAddress: 0x%x\n", info->addr);
 	//uint32_t	addr;		/* memory address of this section */
-	debug("Size: 0x%x\n", info->size);
+	debug("\t\t\tSize: 0x%x\n", info->size);
 	//uint32_t	size;		/* size in bytes of this section */
-	debug("Offset: 0x%x\n", info->offset);
+	debug("\t\t\tOffset: 0x%x\n", info->offset);
 	//uint32_t	offset;		/* file offset of this section */
-	debug("Align: 0x%x\n", info->align);
+	debug("\t\t\tAlign: 0x%x\n", info->align);
 	//uint32_t	align;		/* section alignment (power of 2) */
-	debug("RelOff: 0x%x\n", info->reloff);
+	debug("\t\t\tRelOff: 0x%x\n", info->reloff);
 	//uint32_t	reloff;		/* file offset of relocation entries */
-	debug("nreloc: 0x%x\n", info->nreloc);
+	debug("\t\t\tnreloc: 0x%x\n", info->nreloc);
 	//uint32_t	nreloc;		/* number of relocation entries */
-	debug("flags: 0x%x\n", info->flags);
+	debug("\t\t\tflags: 0x%x\n\n", info->flags);
 	//uint32_t	flags;		/* flags (section type and attributes)*/
 }
 

@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define _DEBUG
 #include <libcrippy-1.0/debug.h>
 #include <libcrippy-1.0/libcrippy.h>
 
@@ -48,11 +49,10 @@ macho_segment_t* macho_segment_load(unsigned char* data, uint32_t offset) {
 		}
 		segment->name = strdup(segment->command->segname);
 		segment->size = segment->command->filesize;
-		segment->offset = segment->command->fileoff;
+		segment->offset = offset;
 		segment->address = segment->command->vmaddr;
-		segment->data = &data[offset];
-		segment->section_count = segment->command->nsects;
-		segment->sections = malloc(segment->command->nsects * sizeof(macho_section_t*));
+		segment->data = &data[segment->command->fileoff];
+		segment->section_count = segment->command->nsects;segment->sections = malloc((segment->command->nsects * sizeof(macho_section_t*)) + 1);
 	}
 	return segment;
 }
@@ -69,11 +69,16 @@ macho_section_t* macho_segment_get_section(macho_segment_t* segment, const char*
 }
 
 void macho_segment_debug(macho_segment_t* segment) {
-	debug("\tSegment:\n");
-	debug("\t\tname: %s\n", segment->name);
-	debug("\t\tsize: 0x%x\n", segment->size);
-	debug("\t\toffset: 0x%x\n", segment->offset);
-	debug("\t\taddress: 0x%08x\n", segment->address);
+	if(segment) {
+		debug("\tSegment:\n");
+		debug("\t\t   name: %s\n", segment->name);
+		debug("\t\t   size: 0x%x\n", segment->size);
+		debug("\t\t offset: 0x%x\n", segment->offset);
+		debug("\t\taddress: 0x%08x\n", segment->address);
+		if(segment->command) {
+			macho_segment_cmd_debug(segment->command);
+		}
+	}
 }
 
 void macho_segment_free(macho_segment_t* segment) {
@@ -109,20 +114,23 @@ macho_segment_cmd_t* macho_segment_cmd_load(unsigned char* data, uint32_t offset
 }
 
 void macho_segment_cmd_debug(macho_segment_cmd_t* cmd) {
-	debug("\tSegment Command:\n");
-	debug("\t\t     cmd = 0x%x\n", cmd->cmd);
-	debug("\t\t cmdsize = 0x%x\n", cmd->cmdsize);
-	debug("\t\t segname = %s\n", cmd->segname);
-	debug("\t\t  vmaddr = 0x%08x\n", cmd->vmaddr);
-	debug("\t\t  vmsize = 0x%x\n", cmd->vmsize);
-	debug("\t\t fileoff = 0x%x\n", cmd->fileoff);
-	debug("\t\tfilesize = 0x%x\n", cmd->filesize);
-	debug("\t\t maxprot = 0x%08x\n", cmd->maxprot);
-	debug("\t\tinitprot = 0x%08x\n", cmd->initprot);
-	debug("\t\t  nsects = 0x%x\n", cmd->nsects);
-	debug("\t\t   flags = 0x%08x\n", cmd->flags);
-}
 
+	if(cmd) {
+		debug("\tSegment Command:\n");
+		debug("\t\t     cmd = 0x%x\n", cmd->cmd);
+		debug("\t\t cmdsize = 0x%x\n", cmd->cmdsize);
+		debug("\t\t segname = %s\n", cmd->segname);
+		debug("\t\t  vmaddr = 0x%08x\n", cmd->vmaddr);
+		debug("\t\t  vmsize = 0x%x\n", cmd->vmsize);
+		debug("\t\t fileoff = 0x%x\n", cmd->fileoff);
+		debug("\t\tfilesize = 0x%x\n", cmd->filesize);
+		debug("\t\t maxprot = 0x%08x\n", cmd->maxprot);
+		debug("\t\tinitprot = 0x%08x\n", cmd->initprot);
+		debug("\t\t  nsects = 0x%x\n", cmd->nsects);
+		debug("\t\t   flags = 0x%08x\n", cmd->flags);
+	}
+
+}
 void macho_segment_cmd_free(macho_segment_cmd_t* cmd) {
 	if (cmd) {
 		free(cmd);

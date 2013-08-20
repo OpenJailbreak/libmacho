@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define _DEBUG
 #include <libcrippy-1.0/debug.h>
 #include <libcrippy-1.0/libcrippy.h>
 
@@ -37,17 +38,18 @@ macho_symtab_t* macho_symtab_create() {
 	return symtab;
 }
 
-macho_symtab_t* macho_symtab_load(unsigned char* cmd, unsigned char* data) {
+macho_symtab_t* macho_symtab_load(unsigned char* data, unsigned int offset) {
+	int i = 0;
 	macho_symtab_t* symtab = macho_symtab_create();
 	if (symtab) {
-		symtab->cmd = macho_symtab_cmd_load(cmd);
+		symtab->cmd = macho_symtab_cmd_load(&data[offset]);
 		if (!symtab->cmd) {
 			macho_symtab_free(symtab);
 			return NULL;
 		}
 		symtab->nsyms = symtab->cmd->nsyms;
-		symtab->symbols = (struct nlist*)(data+symtab->cmd->symoff);
-		int i;
+		symtab->symbols = (struct nlist*)(&data[symtab->cmd->symoff]);
+		debug("Found %d symbols in symtab\n");
 		for (i = 0; i < symtab->nsyms; i++) {
 			uint32_t off = symtab->symbols[i].n_un.n_strx;
 			if (off >= symtab->cmd->strsize) {
@@ -56,7 +58,7 @@ macho_symtab_t* macho_symtab_load(unsigned char* cmd, unsigned char* data) {
 				symtab->symbols[i].n_un.n_name = (char*)(data+symtab->cmd->stroff + off);
 			}
 		}
-		//macho_symtab_debug(symtab);
+		macho_symtab_debug(symtab);
 	}
 	return symtab;
 }
