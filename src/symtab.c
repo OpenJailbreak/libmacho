@@ -49,7 +49,7 @@ macho_symtab_t* macho_symtab_load(unsigned char* data, unsigned int offset) {
 		}
 		symtab->nsyms = symtab->cmd->nsyms;
 		symtab->symbols = (struct nlist*)(&data[symtab->cmd->symoff]);
-		debug("Found %d symbols in symtab\n");
+		debug("Found %d symbols in symtab\n", symtab->nsyms);
 		for (i = 0; i < symtab->nsyms; i++) {
 			uint32_t off = symtab->symbols[i].n_un.n_strx;
 			if (off >= symtab->cmd->strsize) {
