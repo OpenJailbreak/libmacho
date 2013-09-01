@@ -47,7 +47,8 @@ macho_section_t* macho_section_load(unsigned char* data, uint32_t offset) {
 			debug("Loading Mach-O Section\n");
 			section->info = macho_section_info_load(data, offset);
 			if(section->info) {
-				debug("Section Loaded\n");
+				section->name = strdup(section->info->sectname);
+				debug("Section %s Loaded\n", section->name);
 			}
 		}
 	}
@@ -80,7 +81,7 @@ macho_section_info_t* macho_section_info_load(unsigned char* data, uint32_t offs
 	macho_section_info_t* info = macho_section_info_create();
 	if(info) {
 		memcpy(info, &data[offset], sizeof(macho_section_info_t));
-		macho_section_info_debug(info);
+		//macho_section_info_debug(info);
 	}
 	return info;
 }

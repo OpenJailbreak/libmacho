@@ -58,23 +58,25 @@ macho_symtab_t* macho_symtab_load(unsigned char* data, unsigned int offset) {
 				symtab->symbols[i].n_un.n_name = (char*)(data+symtab->cmd->stroff + off);
 			}
 		}
-		macho_symtab_debug(symtab);
+		//macho_symtab_debug(symtab);
 	}
 	return symtab;
 }
 
 void macho_symtab_debug(macho_symtab_t* symtab) {
-	debug("\tSymtab:\n");
-	debug("\t\tnsyms: 0x%08x\n", symtab->nsyms);
-	int i;
-	for (i = 0; i < symtab->nsyms; i++) {
-		struct nlist sym = symtab->symbols[i];
-		if (sym.n_un.n_name) {
-			debug("\t\t0x%x\tname=%s\n", i, sym.n_un.n_name);
-		} else {
-			debug("\t\t0x%x\tname=(no name)\n", i);
+	int i = 0;
+	if(symtab) {
+		debug("\tSymtab:\n");
+		debug("\t\tnsyms: 0x%08x\n", symtab->nsyms);
+		for (i = 0; i < symtab->nsyms; i++) {
+			struct nlist sym = symtab->symbols[i];
+			if (sym.n_un.n_name) {
+				debug("\t\t0x%x\tname=%s\n", i, sym.n_un.n_name);
+			} else {
+				debug("\t\t0x%x\tname=(no name)\n", i);
+			}
+			debug("\t\t\tn_type=0x%02x,n_sect=0x%02x,n_desc=0x%04x,n_value=0x%08x\n", sym.n_type, sym.n_sect, sym.n_desc, sym.n_value);
 		}
-		debug("\t\t\tn_type=0x%02x,n_sect=0x%02x,n_desc=0x%04x,n_value=0x%08x\n", sym.n_type, sym.n_sect, sym.n_desc, sym.n_value);
 	}
 }
 
@@ -102,7 +104,7 @@ macho_symtab_cmd_t* macho_symtab_cmd_load(unsigned char* data) {
 	macho_symtab_cmd_t* cmd = macho_symtab_cmd_create();
 	if (cmd) {
 		memcpy(cmd, data, sizeof(macho_symtab_cmd_t));
-		macho_symtab_cmd_debug(cmd);
+		//macho_symtab_cmd_debug(cmd);
 	}
 	return cmd;
 }

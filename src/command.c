@@ -121,7 +121,7 @@ macho_command_info_t* macho_command_info_load(unsigned char* data, uint32_t offs
 	if (info) {
 		debug("Mach-O Command Info Loaded\n");
 		memcpy(info, data+offset, sizeof(macho_command_info_t));
-		macho_command_info_debug(info);
+		//macho_command_info_debug(info);
 	}
 	return info;
 }

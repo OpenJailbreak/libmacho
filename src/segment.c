@@ -52,7 +52,7 @@ macho_segment_t* macho_segment_load(unsigned char* data, uint32_t offset) {
 		segment->offset = offset;
 		segment->address = segment->command->vmaddr;
 		segment->data = &data[segment->command->fileoff];
-		segment->section_count = segment->command->nsects;segment->sections = malloc((segment->command->nsects * sizeof(macho_section_t*)) + 1);
+		segment->section_count = segment->command->nsects;
 	}
 	return segment;
 }
@@ -108,7 +108,7 @@ macho_segment_cmd_t* macho_segment_cmd_load(unsigned char* data, uint32_t offset
 	macho_segment_cmd_t* cmd = macho_segment_cmd_create();
 	if (cmd) {
 		memcpy(cmd, data+offset, sizeof(macho_segment_cmd_t));
-		macho_segment_cmd_debug(cmd);
+		//macho_segment_cmd_debug(cmd);
 	}
 	return cmd;
 }
