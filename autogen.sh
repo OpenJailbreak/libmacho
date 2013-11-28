@@ -1,8 +1,15 @@
-#!/bin/sh
-aclocal
-libtoolize
-autoconf
+#!/bin/bash
+gprefix=`which glibtoolize 2>&1 >/dev/null`
+if [ $? -eq 0 ]; then 
+  glibtoolize --force
+else
+  libtoolize --force
+fi
+aclocal -I m4
 autoheader
-automake -a -c
-autoreconf -i
-./configure
+automake --add-missing
+autoconf
+
+if [ -z "$NOCONFIGURE" ]; then
+    ./configure "$@"
+fi
